@@ -9,5 +9,3 @@ RSpec.describe "sessions/new.html.erb", type: :view do
     expect(rendered).to match /Email/
   end
 end
-
-
