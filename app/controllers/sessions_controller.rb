@@ -1,31 +1,22 @@
 class SessionsController < ApplicationController
 
-
-
   def new
   end
 
-  def create
-    @user = User.find_by(email: params[:session][:email])
 
-    if @user.password == params[:password]
-      @user.save
-      session[:current_user_id] = @user.id
-      redirect_to statuses_path, flash: { notice: "Log in successfully, #{@user.name}!"}
+  def create
+    @user = User.find_by(session_params)
+    if @user
+      log_in(@user)
+      flash[:notice] = "Welcome, #{@user.email}!"
+      redirect_to statuses_path
     else
       flash[:alert] = "Please log in again"
+      render :new
     end
   end
 
-  # def show
-  #   if session[:current_user_id]
-  #     if User.find(session[:current_user_id])
-  #       redirect_to root_path
-  #     end
-  #   end
-  # end
-
-  def delete
+  def destroy
     session[:current_user_id] = nil
     flash[:notice] = "You have successfully logged out."
     redirect_to root_path
@@ -37,9 +28,5 @@ private
   def session_params
     params.require(:session).permit(:email, :password)
   end
-
-
-
-
 
 end
